@@ -1,1 +1,1 @@
-SAMPLE_CONSTANT: int = 10
+QUOTE_REQUIRED_SYMBOLS: str = " $/*?"

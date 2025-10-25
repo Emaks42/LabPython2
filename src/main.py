@@ -1,5 +1,4 @@
-from src.power import power_function
-from src.constants import SAMPLE_CONSTANT
+from src.bash_processor import BashProcessor
 
 
 def main() -> None:
@@ -8,13 +7,14 @@ def main() -> None:
     :return: Данная функция ничего не возвращает
     """
 
-    target, degree = map(int, input("Введите два числа разделенные пробелом: ").split(" "))
+    print("Добро пожаловать в эмулятор bash, если хотите завершить процесс введите exit")
+    bash_proc = BashProcessor("~")
+    while True:
+        inp = input(bash_proc.get_current_directory() + ">")
+        if inp.strip() == "exit":
+            break
+        bash_proc.command(inp)
 
-    result = power_function(target=target, power=degree)
-
-    print(result)
-
-    print(SAMPLE_CONSTANT)
 
 if __name__ == "__main__":
     main()
