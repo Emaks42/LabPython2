@@ -1,4 +1,5 @@
 from pathlib import Path
+from src.constants import COMMANDS_AND_OPTIONS
 
 
 def preprocess_command(s: str) -> list[str | Path]:
@@ -43,13 +44,19 @@ def preprocess_command(s: str) -> list[str | Path]:
             buffer_data_type = "PATH"
         parsed_command_and_args.append((buffer, buffer_data_type))
     if len(quoted) != 0:
-        return ["ERROR: unclosed quote"]
+        return ["ERROR: unclosed quote\n"]
 
     command_and_correct_paths: list[str | Path] = [parsed_command_and_args[0][0]]
+    if parsed_command_and_args[0][0] not in COMMANDS_AND_OPTIONS.keys():
+        return ["ERROR: undefined command\n"]
     if len(parsed_command_and_args) > 1:
         for arg in parsed_command_and_args[1:]:
             if arg[1] == "OPTION":
-                command_and_correct_paths.extend(["-" + option for option in arg[0][1:]])
+                extended_options = ["-" + option for option in arg[0][1:]]
+                if any(option not in COMMANDS_AND_OPTIONS[str(parsed_command_and_args[0][0])]
+                        for option in extended_options):
+                    return ["ERROR: unexpected option for command\n"]
+                command_and_correct_paths.extend(extended_options)
                 continue
             else:
                 command_and_correct_paths.append(Path(arg[0]).expanduser().resolve())

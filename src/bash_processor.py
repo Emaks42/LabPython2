@@ -34,10 +34,8 @@ class BashProcessor:
         parsed_command = preprocess_command(command)
         if parsed_command[0] in self.available_commands.keys():
             return self.available_commands[str(parsed_command[0])](*parsed_command[1:])
-        elif str(parsed_command[0])[:5] == "ERROR":
-            return str(parsed_command[0])
         else:
-            return "ERROR: undefined command\n"
+            return str(parsed_command[0])
 
     def ls(self, *args) -> str:
         """
