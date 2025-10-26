@@ -13,7 +13,7 @@ def main() -> None:
         inp = input(bash_proc.get_current_directory() + ">")
         if inp.strip() == "exit":
             break
-        bash_proc.command(inp)
+        print(bash_proc.command(inp), end="")
 
 
 if __name__ == "__main__":

@@ -19,7 +19,6 @@ def get_readable_permissions(perm: int) -> str:
 def ls_func(*args) -> str:
     """
         Функция, реализующая работу команды ls (поддерживает опцию -l)
-        :param s:  аргументы команды
         :return: Возвращает результат работы команды
     """
     answer = ""
@@ -68,5 +67,7 @@ def ls_func(*args) -> str:
                     ls_correct_result.append(line + "\n")
                 answer += "".join(ls_correct_result) + "\n"
         except FileNotFoundError:
-            return "ERROR: no such file or directory"
+            return "ERROR: no such file or directory\n"
+        except PermissionError:
+            return "ERROR: permission denied\n"
     return answer
