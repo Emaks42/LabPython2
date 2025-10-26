@@ -13,6 +13,12 @@ class BashProcessor:
             :param cur_dir: изначальная директория консоли (по умолчанию - директория запуска)
         """
         self.current_directory: str = abspath(expanduser(cur_dir))
+        self.available_commands = {
+            "ls": self.ls,
+            "cd": self.cd,
+            "cp": self.cp,
+            "cat": self.cat,
+        }
 
     def command(self, command: str):
         """
@@ -23,14 +29,8 @@ class BashProcessor:
         command = command.strip()
         chdir(self.current_directory)
         parsed_command = preprocess_command(command)
-        if parsed_command[0] == "ls":
-            return self.ls(*parsed_command[1:])
-        elif parsed_command[0] == "cd":
-            return self.cd(*parsed_command[1:])
-        elif parsed_command[0] == "cat":
-            return self.cat(*parsed_command[1:])
-        elif parsed_command[0] == "cp":
-            return self.cp(*parsed_command[1:])
+        if parsed_command[0] in self.available_commands.keys():
+            return self.available_commands[str(parsed_command[0])](*parsed_command[1:])
         elif str(parsed_command[0])[:5] == "ERROR":
             return parsed_command[0]
         else:
@@ -79,7 +79,7 @@ class BashProcessor:
         chdir(self.current_directory)
         answer = ""
         for path in args:
-            if path is PosixPath:
+            if type(path) is PosixPath:
                 if not path.exists():
                     return "ERROR: file does not exist\n"
                 elif path.is_dir():
@@ -90,7 +90,7 @@ class BashProcessor:
                         answer += file + "\n"
                     except PermissionError:
                         return "ERROR: permission denied\n"
-        return ""
+        return answer
 
     def get_current_directory(self) -> str:
         """

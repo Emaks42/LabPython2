@@ -8,7 +8,7 @@ def main() -> None:
     """
 
     print("Добро пожаловать в эмулятор bash, если хотите завершить процесс введите exit")
-    bash_proc = BashProcessor("~")
+    bash_proc = BashProcessor("~/laboratory")
     while True:
         inp = input(bash_proc.get_current_directory() + ">")
         if inp.strip() == "exit":
