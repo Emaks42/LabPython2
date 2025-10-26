@@ -1,6 +1,7 @@
 from src.preprocessor import preprocess_command
 from src.ls import ls_func
 from src.cp import cp_func
+from src.rm import rm_func
 from os import chdir, getcwd
 from os.path import abspath, expanduser, exists
 from pathlib import PosixPath
@@ -18,6 +19,7 @@ class BashProcessor:
             "cd": self.cd,
             "cp": self.cp,
             "cat": self.cat,
+            "rm": self.rm,
         }
 
     def command(self, command: str):
@@ -91,6 +93,14 @@ class BashProcessor:
                     except PermissionError:
                         return "ERROR: permission denied\n"
         return answer
+
+    def rm(self, *args):
+        """
+            Функция, вызывающая функцию rm_func из другого фойла
+            :return: Возвращает результат работы функции
+        """
+        chdir(self.current_directory)
+        return rm_func(*args)
 
     def get_current_directory(self) -> str:
         """

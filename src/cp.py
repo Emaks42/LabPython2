@@ -19,11 +19,6 @@ def cp_func(*args) -> str:
             return "ERROR: missing file operand\n"
         elif len(args_) == 1:
             return "ERROR: not specified directory to copy\n"
-        elif len(args_) == 2:
-            if is_r:
-                copytree(args[0], args[1], dirs_exist_ok=True)
-            else:
-                copy2(args[0], args[1])
         else:
             for path in args[:-1]:
                 if is_r:

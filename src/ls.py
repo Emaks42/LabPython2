@@ -1,5 +1,6 @@
 from os import listdir
 from os import stat
+from time import ctime
 from src.constants import QUOTE_REQUIRED_SYMBOLS
 
 
@@ -62,7 +63,7 @@ def ls_func(*args) -> str:
                         line += obj
                     line += " "
                     line += str(stat(str(path) + "/" + obj).st_size) + " "
-                    line += str(stat(str(path) + "/" + obj).st_mtime) + " "
+                    line += str(ctime(stat(str(path) + "/" + obj).st_mtime)) + " "
                     line += get_readable_permissions(stat(str(path) + "/" + obj).st_mode)
                     ls_correct_result.append(line + "\n")
                 answer += "".join(ls_correct_result) + "\n"
