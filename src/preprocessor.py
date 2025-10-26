@@ -41,7 +41,7 @@ def preprocess_command(s: str) -> list[str | Path]:
     if len(parsed_command_and_args) > 1:
         for arg in parsed_command_and_args[1:]:
             if arg[0] == "-" and len(arg) > 1:
-                command_and_correct_paths.append(arg)
+                command_and_correct_paths.extend(["-" + option for option in arg[1:]])
                 continue
             else:
                 command_and_correct_paths.append(Path(arg).expanduser().resolve())

@@ -8,7 +8,7 @@ from pathlib import PosixPath
 
 
 class BashProcessor:
-    def __init__(self, cur_dir: str = getcwd()):
+    def __init__(self, cur_dir: str = getcwd()) -> None:
         """
             Функция инициализирующая класс
             :param cur_dir: изначальная директория консоли (по умолчанию - директория запуска)
@@ -20,9 +20,10 @@ class BashProcessor:
             "cp": self.cp,
             "cat": self.cat,
             "rm": self.rm,
+            "mv": self.mv,
         }
 
-    def command(self, command: str):
+    def command(self, command: str) -> str:
         """
             Функция, принимающая и исполняющая команду
             :param command: переданная команда
@@ -34,11 +35,11 @@ class BashProcessor:
         if parsed_command[0] in self.available_commands.keys():
             return self.available_commands[str(parsed_command[0])](*parsed_command[1:])
         elif str(parsed_command[0])[:5] == "ERROR":
-            return parsed_command[0]
+            return str(parsed_command[0])
         else:
             return "ERROR: undefined command\n"
 
-    def ls(self, *args):
+    def ls(self, *args) -> str:
         """
             Функция, вызывающая функцию ls_func из другого фойла
             :return: Возвращает результат работы функции
@@ -94,13 +95,23 @@ class BashProcessor:
                         return "ERROR: permission denied\n"
         return answer
 
-    def rm(self, *args):
+    def rm(self, *args) -> str:
         """
             Функция, вызывающая функцию rm_func из другого фойла
             :return: Возвращает результат работы функции
         """
         chdir(self.current_directory)
         return rm_func(*args)
+
+    def mv(self, *args) -> str:
+        chdir(self.current_directory)
+        cp_ = self.cp(*args)
+        rm_ = self.rm(*(list(args[:-1]) + ["-y"]))
+        if cp_ != "":
+            return cp_
+        if rm_ != "":
+            return rm_
+        return ""
 
     def get_current_directory(self) -> str:
         """

@@ -1,7 +1,7 @@
 from os import listdir
 from os import stat
 from time import ctime
-from src.constants import QUOTE_REQUIRED_SYMBOLS
+from src.constants import QUOTE_REQUIRED_SYMBOLS, COMMANDS_AND_OPTIONS
 
 
 def get_readable_permissions(perm: int) -> str:
@@ -24,20 +24,20 @@ def ls_func(*args) -> str:
     """
     answer = ""
     args_ = list(args)
-    is_l: bool
-    if "-l" in args_:
-        is_l = True
-        while "-l" in args_:
-            args_.remove("-l")
-    else:
-        is_l = False
+    opt = COMMANDS_AND_OPTIONS["ls"]
+    options = dict(zip(opt, [False] * len(opt)))
+    while any(option in args_ for option in opt):
+        for option in opt:
+            if option in args_:
+                options[option] = True
+                args_.remove(option)
     if len(args_) == 0:
         args_.append(".")
     for path in args_:
         try:
-            if not is_l:
+            if not options["-l"]:
                 answer += str(path) + "\n"
-                ls_raw_result = listdir(str(path))
+                ls_raw_result = sorted(listdir(str(path)))
                 ls_correct_result = []
                 for obj in ls_raw_result:
                     if any(symbol in obj for symbol in QUOTE_REQUIRED_SYMBOLS):
@@ -50,7 +50,7 @@ def ls_func(*args) -> str:
                 answer += "\n".join(ls_correct_result) + "\n"
             else:
                 answer += str(path) + "\n"
-                ls_raw_result = listdir(str(path))
+                ls_raw_result = sorted(listdir(str(path)))
                 ls_correct_result = []
                 for obj in ls_raw_result:
                     line = ""

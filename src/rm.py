@@ -1,20 +1,22 @@
 from shutil import rmtree
 from pathlib import Path
+from src.constants import COMMANDS_AND_OPTIONS
 
 
 def rm_func(*args):
     """
-        Функция, реализующая работу команды rm (поддерживает опцию -r)
+        Функция, реализующая работу команды rm (поддерживает опции -r и
+        -y (специальная опция для автоматического подтверждения удаления директорий))
         :return: Возвращает результат работы команды (ошибки)
     """
     args_ = list(args)
-    is_r: bool
-    if "-r" in args_:
-        is_r = True
-        while "-r" in args_:
-            args_.remove("-r")
-    else:
-        is_r = False
+    opt = COMMANDS_AND_OPTIONS["rm"]
+    options = dict(zip(opt, [False] * len(opt)))
+    while any(option in args_ for option in opt):
+        for option in opt:
+            if option in args_:
+                options[option] = True
+                args_.remove(option)
     try:
         if len(args_) == 0:
             return "ERROR: missing file operand\n"
@@ -26,8 +28,17 @@ def rm_func(*args):
                     return "ERROR: trying to remove root directory\n"
                 elif path == Path("C:\\").resolve():
                     return "ERROR: trying to remove root directory\n"
-                elif is_r:
-                    rmtree(str(path))
+                elif options["-r"]:
+                    if not options["-y"]:
+                        permission = input(f"Вы хотите удалить директорию {path}? (y/n)").lower()
+                        while not(permission == "y" or permission == "n"):
+                            permission = input("Возможно вы не дочитали. " +
+                                               f"Вы хотите удалить директорию {path}? (y/n)").lower()
+                            print(permission)
+                        if permission == "y":
+                            rmtree(str(path))
+                    else:
+                        rmtree(str(path))
                 else:
                     path.unlink()
     except FileNotFoundError:
