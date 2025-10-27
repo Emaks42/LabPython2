@@ -5,8 +5,7 @@ from src.constants import COMMANDS_AND_OPTIONS
 
 def rm_func(*args) -> tuple[str, str]:
     """
-        Функция, реализующая работу команды rm (поддерживает опции -r и
-        -y (специальная опция для автоматического подтверждения удаления директорий))
+        Функция, реализующая работу команды rm (поддерживает опции -r и -f)
         :return: Возвращает результат работы команды (ошибки)
     """
     ostream = ""
@@ -31,7 +30,7 @@ def rm_func(*args) -> tuple[str, str]:
                 elif path == Path("C:\\").resolve():
                     estream += "ERROR: trying to remove root directory\n"
                 elif options["-r"]:
-                    if not options["-y"]:
+                    if not options["-f"]:
                         permission = input(f"Вы хотите удалить директорию {path}? (y/n)").lower()
                         while not (permission == "y" or permission == "n"):
                             permission = input("Возможно вы не дочитали. " +

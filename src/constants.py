@@ -5,5 +5,5 @@ COMMANDS_AND_OPTIONS: dict[str, list[str]] = {
     "cat": [],
     "cd": [],
     "cp": ["-r"],
-    "rm": ["-r", "-y"],
+    "rm": ["-r", "-f"],
 }
