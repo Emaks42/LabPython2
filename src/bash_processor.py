@@ -95,6 +95,8 @@ class BashProcessor:
         chdir(self.current_directory)
         ostream = ""
         estream = ""
+        if len(args) == 0:
+            estream += "ERROR: file not given to command\n"
         for path in args:
             if type(path) is PosixPath:
                 if not path.exists():
