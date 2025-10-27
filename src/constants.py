@@ -5,5 +5,9 @@ COMMANDS_AND_OPTIONS: dict[str, list[str]] = {
     "cat": [],
     "cd": [],
     "cp": ["-r"],
+    "zip": [],
+    "unzip": [],
+    "tar": [],
+    "untar": [],
     "rm": ["-r", "-f"],
 }
