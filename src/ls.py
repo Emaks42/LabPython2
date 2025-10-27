@@ -1,5 +1,5 @@
-from os import listdir
-from os import stat
+from os import listdir, stat
+from os.path import exists
 from time import ctime
 from src.constants import QUOTE_REQUIRED_SYMBOLS, COMMANDS_AND_OPTIONS
 
@@ -17,12 +17,13 @@ def get_readable_permissions(perm: int) -> str:
     return "".join([mask[i] if perm_bits[i] == '1' else "-" for i in range(9)])
 
 
-def ls_func(*args) -> str:
+def ls_func(*args) -> tuple[str, str]:
     """
         Функция, реализующая работу команды ls (поддерживает опцию -l)
         :return: Возвращает результат работы команды
     """
-    answer = ""
+    ostream = ""
+    estream = ""
     args_ = list(args)
     opt = COMMANDS_AND_OPTIONS["ls"]
     options = dict(zip(opt, [False] * len(opt)))
@@ -36,7 +37,8 @@ def ls_func(*args) -> str:
     for path in args_:
         try:
             if not options["-l"]:
-                answer += str(path) + "\n"
+                if exists(str(path)):
+                    ostream += str(path) + "\n"
                 ls_raw_result = sorted(listdir(str(path)))
                 ls_correct_result = []
                 for obj in ls_raw_result:
@@ -47,9 +49,10 @@ def ls_func(*args) -> str:
                             ls_correct_result.append('"' + obj + '"')
                     else:
                         ls_correct_result.append(obj)
-                answer += "\n".join(ls_correct_result) + "\n"
+                ostream += "\n".join(ls_correct_result) + "\n"
             else:
-                answer += str(path) + "\n"
+                if exists(str(path)):
+                    ostream += str(path) + "\n"
                 ls_raw_result = sorted(listdir(str(path)))
                 ls_correct_result = []
                 for obj in ls_raw_result:
@@ -66,9 +69,9 @@ def ls_func(*args) -> str:
                     line += str(ctime(stat(str(path) + "/" + obj).st_mtime)) + " "
                     line += get_readable_permissions(stat(str(path) + "/" + obj).st_mode)
                     ls_correct_result.append(line + "\n")
-                answer += "".join(ls_correct_result) + "\n"
+                ostream += "".join(ls_correct_result) + "\n"
         except FileNotFoundError:
-            return "ERROR: no such file or directory\n"
+            estream += "ERROR: no such file or directory\n"
         except PermissionError:
-            return "ERROR: permission denied\n"
-    return answer
+            estream += "ERROR: permission denied\n"
+    return estream, ostream

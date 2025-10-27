@@ -18,7 +18,7 @@ def preprocess_command(s: str) -> list[str | Path]:
     buffer_data_type = "OPTION"
     while current_position < len(s):
         if len(quoted) == 0 and s[current_position] == " " and not screened:
-            if buffer[0] != "-" and len(buffer) > 1:
+            if (buffer[0] != "-" and buffer_data_type == "OPTION") or buffer == "-":
                 buffer_data_type = "PATH"
             parsed_command_and_args.append((buffer, buffer_data_type))
             buffer = ""
@@ -40,7 +40,7 @@ def preprocess_command(s: str) -> list[str | Path]:
             screened = False
         current_position += 1
     if len(buffer) != 0:
-        if buffer[0] != "-" and len(buffer) > 1:
+        if (buffer[0] != "-" and buffer_data_type == "OPTION") or buffer == "-":
             buffer_data_type = "PATH"
         parsed_command_and_args.append((buffer, buffer_data_type))
     if len(quoted) != 0:
@@ -60,5 +60,4 @@ def preprocess_command(s: str) -> list[str | Path]:
                 continue
             else:
                 command_and_correct_paths.append(Path(arg[0]).expanduser().resolve())
-
     return command_and_correct_paths

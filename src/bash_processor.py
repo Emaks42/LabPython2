@@ -16,7 +16,7 @@ class BashProcessor:
         """
         logging.basicConfig(filename="shell.log",
                             level=logging.INFO,
-                            format="[%(asctime)s %(name)s] %(message)s",
+                            format="[%(asctime)s] %(message)s",
                             filemode="w")
         self.current_directory: str = abspath(expanduser(cur_dir))
         self.available_commands = {
@@ -39,33 +39,35 @@ class BashProcessor:
         parsed_command = preprocess_command(command)
         if parsed_command[0] in self.available_commands.keys():
             logging.info(command)
-            return self.available_commands[str(parsed_command[0])](*parsed_command[1:])
+            command_result = self.available_commands[str(parsed_command[0])](*parsed_command[1:])
+            if len(command_result[0]) != 0:
+                for err in command_result[0][:-1].split("\n"):
+                    logging.error(err)
+            else:
+                logging.info("SUCCESS")
+            return command_result[0] + command_result[1]
         else:
-            logging.error(str(parsed_command[0]))
+            logging.error(str(parsed_command[0])[:-1])
             return str(parsed_command[0])
 
-    def ls(self, *args) -> str:
+    def ls(self, *args) -> tuple[str, str]:
         """
             Функция, вызывающая функцию ls_func из другого фойла
             :return: Возвращает результат работы функции
         """
         chdir(self.current_directory)
-        ls_ = ls_func(*args)
-        if ls_[:5] != "ERROR":
-            logging.info("SUCCESS")
-        else:
-            logging.error(ls_[:-1])
-        return ls_
+        return ls_func(*args)
 
-    def cd(self, *args) -> str:
+    def cd(self, *args) -> tuple[str, str]:
         """
             Функция, реализующая работу команды cd
             (оставлена в осоновном файле из-за небольшого размера)
             :return: Возвращает результат работы команды (ошибки)
         """
+        ostream = ""
+        estream = ""
         if len(args) > 1:
-            logging.error("ERROR: too many arguments for cd command")
-            return "ERROR: too many arguments for cd command\n"
+            estream += "ERROR: too many arguments for cd command\n"
         elif len(args) == 0:
             self.current_directory = expanduser("~")
         else:
@@ -73,75 +75,62 @@ class BashProcessor:
             if exists(path_):
                 self.current_directory = str(path_)
             else:
-                logging.error("ERROR: directory does not exist")
-                return "ERROR: directory does not exist\n"
-        logging.info("SUCCESS")
-        return ""
+                estream += "ERROR: directory does not exist\n"
+        return estream, ostream
 
-    def cp(self, *args) -> str:
+    def cp(self, *args) -> tuple[str, str]:
         """
             Функция, вызывающая функцию cp_func из другого фойла
             :return: Возвращает результат работы функции
         """
         chdir(self.current_directory)
-        cp_ = cp_func(*args)
-        if cp_[:5] != "ERROR":
-            logging.info("SUCCESS")
-        else:
-            logging.error(cp_[:-1])
-        return cp_
+        return cp_func(*args)
 
-    def cat(self, *args) -> str:
+    def cat(self, *args) -> tuple[str, str]:
         """
             Функция, реализующая работу команды cat
             (оставлена в осоновном файле из-за небольшого размера)
             :return: Возвращает результат работы команды
         """
         chdir(self.current_directory)
-        answer = ""
+        ostream = ""
+        estream = ""
         for path in args:
             if type(path) is PosixPath:
                 if not path.exists():
-                    logging.error("ERROR: file does not exist")
-                    return "ERROR: file does not exist\n"
+                    estream += "ERROR: file does not exist\n"
                 elif path.is_dir():
-                    logging.error("ERROR: given directory not file")
-                    return "ERROR: given directory not file\n"
+                    estream += "ERROR: given directory not file\n"
                 else:
                     try:
                         file = path.read_text(encoding="utf-8")
-                        answer += file + "\n"
+                        ostream += file + "\n"
                     except PermissionError:
-                        logging.error("ERROR: permission denied")
-                        return "ERROR: permission denied\n"
-        logging.info("SUCCESS")
-        return answer
+                        estream += "ERROR: permission denied\n"
+        return estream, ostream
 
-    def rm(self, *args) -> str:
+    def rm(self, *args) -> tuple[str, str]:
         """
             Функция, вызывающая функцию rm_func из другого фойла
             :return: Возвращает результат работы функции
         """
         chdir(self.current_directory)
-        rm_ = rm_func(*args)
-        if rm_[:5] != "ERROR":
-            logging.info("SUCCESS")
-        else:
-            logging.error(rm_[:-1])
-        return rm_
+        return rm_func(*args)
 
-    def mv(self, *args) -> str:
+    def mv(self, *args) -> tuple[str, str]:
+        """
+            Функция, реализующая работу команды mv как композицию команд rm и cp
+            (оставлена в осоновном файле из-за небольшого размера)
+            :return: Возвращает результат работы команды
+        """
         chdir(self.current_directory)
         cp_ = cp_func(*args)
-        if cp_ != "":
-            logging.error(cp_[:-1])
+        if len(cp_[0]) != 0:
             return cp_
         rm_ = rm_func(*(list(args[:-1]) + ["-y"]))
-        if rm_ != "" and rm_ != "ERROR: no such file\n":
-            logging.error(rm_[:-1])
-            return rm_
-        logging.info("SUCCESS")
-        return ""
+        if len(rm_[0].replace("ERROR: no such file\n", "")) != 0:
+            return rm_[0].replace("ERROR: no such file\n", ""), ""
+        return "", ""
 
     def get_current_directory(self) -> str:
         """
