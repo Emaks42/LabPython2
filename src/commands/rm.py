@@ -1,6 +1,6 @@
 from shutil import rmtree
 from pathlib import Path
-from src.constants import COMMANDS_AND_OPTIONS
+from src.preprocessor import preprocess_options_for_command
 
 
 def rm_func(*args) -> tuple[str, str]:
@@ -10,20 +10,14 @@ def rm_func(*args) -> tuple[str, str]:
     """
     ostream = ""
     estream = ""
-    args_ = list(args)
-    opt = COMMANDS_AND_OPTIONS["rm"]
-    options = dict(zip(opt, [False] * len(opt)))
-    while any(option in args_ for option in opt):
-        for option in opt:
-            if option in args_:
-                options[option] = True
-                args_.remove(option)
+    args_, options = preprocess_options_for_command("rm", *args)
     if len(args_) == 0:
         estream += "ERROR: missing file operand\n"
     else:
         for path in args_:
             try:
-                if path == Path("..").resolve():
+                path = Path(path)
+                if path == Path("../..").resolve():
                     estream += "ERROR: trying to remove parent directory\n"
                 elif path == Path("/").resolve():
                     estream += "ERROR: trying to remove root directory\n"

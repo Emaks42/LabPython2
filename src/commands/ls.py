@@ -1,7 +1,8 @@
 from os import listdir, stat
 from os.path import exists
 from time import ctime
-from src.constants import QUOTE_REQUIRED_SYMBOLS, COMMANDS_AND_OPTIONS
+from src.constants import QUOTE_REQUIRED_SYMBOLS
+from src.preprocessor import preprocess_options_for_command
 
 
 def get_readable_permissions(perm: int) -> str:
@@ -24,14 +25,7 @@ def ls_func(*args) -> tuple[str, str]:
     """
     ostream = ""
     estream = ""
-    args_ = list(args)
-    opt = COMMANDS_AND_OPTIONS["ls"]
-    options = dict(zip(opt, [False] * len(opt)))
-    while any(option in args_ for option in opt):
-        for option in opt:
-            if option in args_:
-                options[option] = True
-                args_.remove(option)
+    args_, options = preprocess_options_for_command("ls", *args)
     if len(args_) == 0:
         args_.append(".")
     for path in args_:

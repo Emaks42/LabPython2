@@ -1,10 +1,10 @@
 from src.preprocessor import preprocess_command
-from src.ls import ls_func
-from src.cp import cp_func
-from src.rm import rm_func
-from src.grep import grep_func
-from src.cat import cat_func
-from src.zip_and_tar import zip_func, tar_func, untar_func, unzip_func
+from src.commands.ls import ls_func
+from src.commands.cp import cp_func
+from src.commands.rm import rm_func
+from src.commands.grep import grep_func
+from src.commands.cat import cat_func
+from src.commands.zip_and_tar import zip_func, tar_func, untar_func, unzip_func
 from os import chdir, getcwd
 from os.path import abspath, expanduser, exists
 import logging

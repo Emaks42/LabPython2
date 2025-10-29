@@ -1,18 +1,12 @@
 from re import findall
-from src.constants import COMMANDS_AND_OPTIONS
+from src.preprocessor import preprocess_options_for_command
+from pathlib import Path
 
 
 def grep_func(*args) -> tuple[str, str]:
     ostream = ""
     estream = ""
-    args_ = list(args)
-    opt = COMMANDS_AND_OPTIONS["grep"]
-    options = dict(zip(opt, [False] * len(opt)))
-    while any(option in args_ for option in opt):
-        for option in opt:
-            if option in args_:
-                options[option] = True
-                args_.remove(option)
+    args_, options = preprocess_options_for_command("grep", *args)
     if len(args_) == 0:
         estream += "ERROR: missing pattern operand\n"
         return estream, ostream
@@ -23,7 +17,7 @@ def grep_func(*args) -> tuple[str, str]:
         estream += "ERROR: too many arguments to grep command\n"
         return estream, ostream
     pattern = args_[0]
-    path = args_[1]
+    path = Path(args_[1])
     if path.is_dir() and not options["-r"]:
         estream += "ERROR: trying to search in directory without -r\n"
         return estream, ostream
@@ -42,7 +36,7 @@ def grep_func(*args) -> tuple[str, str]:
                     analyze_text = analyze_text_str.split("\n")
                     for line in range(len(analyze_text)):
                         if findall(str(pattern), analyze_text[line]):
-                            ostream += str(inner_path) + " " + str(line + 1) + " " + analyze_text[line].strip() + '\n'
+                            ostream += str(inner_path) + " " + str(line + 1) + ": " + analyze_text[line].strip() + '\n'
             except PermissionError:
                 estream += "ERROR: permission denied\n"
             except UnicodeDecodeError:
@@ -55,7 +49,7 @@ def grep_func(*args) -> tuple[str, str]:
             analyze_text = analyze_text_str.split("\n")
             for line in range(len(analyze_text)):
                 if findall(str(pattern), analyze_text[line]):
-                    ostream += str(line + 1) + " " + analyze_text[line].strip() + '\n'
+                    ostream += str(line + 1) + ": " + analyze_text[line].strip() + '\n'
         except PermissionError:
             estream += "ERROR: permission denied\n"
         except UnicodeDecodeError:

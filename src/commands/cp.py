@@ -1,5 +1,6 @@
 from shutil import copy2, copytree, SameFileError
-from src.constants import COMMANDS_AND_OPTIONS
+from pathlib import Path
+from src.preprocessor import preprocess_options_for_command
 
 
 def cp_func(*args) -> tuple[str, str]:
@@ -9,14 +10,7 @@ def cp_func(*args) -> tuple[str, str]:
     """
     ostream = ""
     estream = ""
-    args_ = list(args)
-    opt = COMMANDS_AND_OPTIONS["cp"]
-    options = dict(zip(opt, [False] * len(opt)))
-    while any(option in args_ for option in opt):
-        for option in opt:
-            if option in args_:
-                options[option] = True
-                args_.remove(option)
+    args_, options = preprocess_options_for_command("cp", *args)
     try:
         if len(args_) == 0:
             estream += "ERROR: missing file operand\n"
@@ -34,7 +28,7 @@ def cp_func(*args) -> tuple[str, str]:
         estream += "ERROR: permission denied\n"
     except SameFileError:
         if not options["-r"]:
-            if any(path.is_dir() for path in args_[:-1]):
+            if any(Path(path).is_dir() for path in args_[:-1]):
                 estream += "ERROR: trying to copy directory without -r\n"
     except IsADirectoryError:
         estream += "ERROR: trying to copy directory without -r\n"

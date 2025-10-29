@@ -2,6 +2,18 @@ from pathlib import Path
 from src.constants import COMMANDS_AND_OPTIONS, COMMANDS_REQUIRES_TEXT_ARGS
 
 
+def preprocess_options_for_command(command: str, *args) -> tuple[list[str | Path], dict[str, bool]]:
+    args_ = list(args)
+    opt = COMMANDS_AND_OPTIONS[command]
+    options = dict(zip(opt, [False] * len(opt)))
+    while any(option in args_ for option in opt):
+        for option in opt:
+            if option in args_:
+                options[option] = True
+                args_.remove(option)
+    return args_, options
+
+
 def preprocess_command(s: str) -> list[str | Path]:
     """
         Функция, разделяющая полученную строку (команду) на название команды
