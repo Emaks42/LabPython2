@@ -10,4 +10,8 @@ COMMANDS_AND_OPTIONS: dict[str, list[str]] = {
     "tar": [],
     "untar": [],
     "rm": ["-r", "-f"],
+    "grep": ["-r", "-i"],
+}
+COMMANDS_REQUIRES_TEXT_ARGS: dict[str, int] = {
+    "grep": 1,
 }

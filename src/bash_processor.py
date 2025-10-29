@@ -2,6 +2,7 @@ from src.preprocessor import preprocess_command
 from src.ls import ls_func
 from src.cp import cp_func
 from src.rm import rm_func
+from src.grep import grep_func
 from src.zip_and_tar import zip_func, tar_func, untar_func, unzip_func
 from os import chdir, getcwd
 from os.path import abspath, expanduser, exists
@@ -31,6 +32,7 @@ class BashProcessor:
             "unzip": self.unzip,
             "tar": self.tar,
             "untar": self.untar,
+            "grep": self.grep,
         }
 
     def command(self, command: str) -> str:
@@ -42,6 +44,8 @@ class BashProcessor:
         command = command.strip()
         chdir(self.current_directory)
         parsed_command = preprocess_command(command)
+        if len(parsed_command) == 0:
+            return ""
         if parsed_command[0] in self.available_commands.keys():
             logging.info(command)
             command_result = self.available_commands[str(parsed_command[0])](*parsed_command[1:])
@@ -154,6 +158,10 @@ class BashProcessor:
     def untar(self, *args) -> tuple[str, str]:
         chdir(self.current_directory)
         return untar_func(*args)
+
+    def grep(self, *args) -> tuple[str, str]:
+        chdir(self.current_directory)
+        return grep_func(*args)
 
     def get_current_directory(self) -> str:
         """
