@@ -36,7 +36,10 @@ def grep_func(*args) -> tuple[str, str]:
                     estream += estream_
                     ostream += ostream_
                 else:
-                    analyze_text = str(inner_path.read_text(encoding="utf-8")).split("\n")
+                    analyze_text_str = str(inner_path.read_text(encoding="utf-8"))
+                    if options["-i"]:
+                        analyze_text_str.lower()
+                    analyze_text = analyze_text_str.split("\n")
                     for line in range(len(analyze_text)):
                         if findall(str(pattern), analyze_text[line]):
                             ostream += str(inner_path) + " " + str(line + 1) + " " + analyze_text[line].strip() + '\n'
@@ -46,7 +49,10 @@ def grep_func(*args) -> tuple[str, str]:
                 estream += f"ERROR: incorrect file format in file {inner_path}\n"
     else:
         try:
-            analyze_text = str(path.read_text(encoding="utf-8")).split("\n")
+            analyze_text_str = str(path.read_text(encoding="utf-8"))
+            if options["-i"]:
+                analyze_text_str.lower()
+            analyze_text = analyze_text_str.split("\n")
             for line in range(len(analyze_text)):
                 if findall(str(pattern), analyze_text[line]):
                     ostream += str(line + 1) + " " + analyze_text[line].strip() + '\n'

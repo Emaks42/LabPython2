@@ -3,10 +3,10 @@ from src.ls import ls_func
 from src.cp import cp_func
 from src.rm import rm_func
 from src.grep import grep_func
+from src.cat import cat_func
 from src.zip_and_tar import zip_func, tar_func, untar_func, unzip_func
 from os import chdir, getcwd
 from os.path import abspath, expanduser, exists
-from pathlib import PosixPath
 import logging
 
 
@@ -102,23 +102,7 @@ class BashProcessor:
             :return: Возвращает результат работы команды
         """
         chdir(self.current_directory)
-        ostream = ""
-        estream = ""
-        if len(args) == 0:
-            estream += "ERROR: file not given to command\n"
-        for path in args:
-            if type(path) is PosixPath:
-                if not path.exists():
-                    estream += "ERROR: file does not exist\n"
-                elif path.is_dir():
-                    estream += "ERROR: given directory not file\n"
-                else:
-                    try:
-                        file = path.read_text(encoding="utf-8")
-                        ostream += file + "\n"
-                    except PermissionError:
-                        estream += "ERROR: permission denied\n"
-        return estream, ostream
+        return cat_func(*args)
 
     def rm(self, *args) -> tuple[str, str]:
         """
