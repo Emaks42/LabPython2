@@ -1,5 +1,5 @@
 from os import listdir, stat
-from os.path import exists
+from os.path import exists, isdir
 from time import ctime
 from src.constants import QUOTE_REQUIRED_SYMBOLS
 from src.preprocessor import preprocess_options_for_command
@@ -31,7 +31,7 @@ def ls_func(*args) -> tuple[str, str]:
     for path in args_:
         try:
             if not options["-l"]:
-                if exists(str(path)):
+                if exists(str(path)) and isdir(str(path)):
                     ostream += str(path) + "\n"
                 ls_raw_result = sorted(listdir(str(path)))
                 ls_correct_result = []
@@ -45,7 +45,7 @@ def ls_func(*args) -> tuple[str, str]:
                         ls_correct_result.append(obj)
                 ostream += "\n".join(ls_correct_result) + "\n"
             else:
-                if exists(str(path)):
+                if exists(str(path)) and isdir(str(path)):
                     ostream += str(path) + "\n"
                 ls_raw_result = sorted(listdir(str(path)))
                 ls_correct_result = []
@@ -68,4 +68,6 @@ def ls_func(*args) -> tuple[str, str]:
             estream += "ERROR: no such file or directory\n"
         except PermissionError:
             estream += "ERROR: permission denied\n"
+        except NotADirectoryError:
+            estream += "ERROR: not a directory\n"
     return estream, ostream
