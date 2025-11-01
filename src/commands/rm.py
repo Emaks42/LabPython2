@@ -17,7 +17,7 @@ def rm_func(*args) -> tuple[str, str]:
         for path in args_:
             try:
                 path = Path(path)
-                if path == Path("../..").resolve():
+                if path == Path("..").resolve():
                     estream += "ERROR: trying to remove parent directory\n"
                 elif path == Path("/").resolve():
                     estream += "ERROR: trying to remove root directory\n"
