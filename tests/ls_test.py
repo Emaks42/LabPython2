@@ -8,6 +8,17 @@ def test_ls_work_with_multiple_args(bash_processor):
                                                        '/data/ls_folder\n0.txt\n1.txt\n2.txt\n'
 
 
+def test_ls_l_work(bash_processor):
+    data = bash_processor.command("ls -l ls_folder").split('\n')
+    assert data[0] == '/data/ls_folder'
+    assert data[1][:7] == '0.txt 1'
+    assert data[1][-9:] == 'rw-rw-r--'
+    assert data[2][:7] == '1.txt 1'
+    assert data[2][-9:] == 'rw-rw-r--'
+    assert data[3][:7] == '2.txt 1'
+    assert data[3][-9:] == 'rw-rw-r--'
+
+
 def test_ls_without_args_work(bash_processor):
     assert bash_processor.command("ls") == '.\n0.txt\n1.txt\n2.txt\n3.txt\n4.txt\n5.txt\n6.txt\n7.txt' \
                                            '\n8.txt\n9.txt\nls_folder\npermitted\n'

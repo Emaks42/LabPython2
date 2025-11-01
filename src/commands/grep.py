@@ -18,9 +18,23 @@ def grep_func(*args) -> tuple[str, str]:
         return estream, ostream
     pattern = args_[0]
     path = Path(args_[1])
-    if path.is_dir() and not options["-r"]:
-        estream += "ERROR: trying to search in directory without -r\n"
+    try:
+        if path.is_dir() and not options["-r"]:
+            estream += "ERROR: trying to search in directory without -r\n"
+            return estream, ostream
+        if not path.exists():
+            estream += "ERROR: no such file or directory\n"
+            return estream, ostream
+    except PermissionError:
+        estream += "ERROR: permission denied\n"
         return estream, ostream
+    try:
+        path.iterdir()
+    except PermissionError:
+        estream += "ERROR: permission denied\n"
+        return estream, ostream
+    except NotADirectoryError:
+        pass
     if path.is_dir():
         for inner_path in path.iterdir():
             try:
@@ -37,8 +51,6 @@ def grep_func(*args) -> tuple[str, str]:
                     for line in range(len(analyze_text)):
                         if findall(str(pattern), analyze_text[line]):
                             ostream += str(inner_path) + " " + str(line + 1) + ": " + analyze_text[line].strip() + '\n'
-            except PermissionError:
-                estream += "ERROR: permission denied\n"
             except UnicodeDecodeError:
                 estream += f"ERROR: incorrect file format in file {inner_path}\n"
     else:
@@ -50,8 +62,6 @@ def grep_func(*args) -> tuple[str, str]:
             for line in range(len(analyze_text)):
                 if findall(str(pattern), analyze_text[line]):
                     ostream += str(line + 1) + ": " + analyze_text[line].strip() + '\n'
-        except PermissionError:
-            estream += "ERROR: permission denied\n"
         except UnicodeDecodeError:
             estream += "ERROR: incorrect file format\n"
     return estream, ostream
