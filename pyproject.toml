@@ -9,6 +9,3 @@ dependencies = [
     "pytest==8.4.2",
     "setuptools>=80.9.0",
 ]
-[[tool.mypy.overrides]]
-module = ["pytest", "pyfakefs.*"]
-ignore_missing_imports = true
