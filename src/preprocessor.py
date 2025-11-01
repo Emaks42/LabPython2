@@ -44,7 +44,6 @@ def preprocess_command(s: str) -> list[str | Path]:
                     text_arg_required = COMMANDS_REQUIRES_TEXT_ARGS[parsed_command_and_args[0][0]]
         elif (s[current_position] == "'" or s[current_position] == '"') and not screened:
             buffer_data_type = "PATH"
-            buffer += s[current_position]
             if quoted == s[current_position]:
                 quoted = ""
             else:
@@ -54,7 +53,6 @@ def preprocess_command(s: str) -> list[str | Path]:
                     buffer += s[current_position]
         elif s[current_position] == "\\" and not screened:
             buffer_data_type = "PATH"
-            buffer += s[current_position]
             screened = True
         else:
             buffer += s[current_position]

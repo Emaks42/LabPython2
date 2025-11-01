@@ -5,8 +5,8 @@ from src.commands.rm import rm_func
 from src.commands.grep import grep_func
 from src.commands.cat import cat_func
 from src.commands.zip_and_tar import zip_func, tar_func, untar_func, unzip_func
-from os import chdir, getcwd
-from os.path import abspath, expanduser, exists
+from os import chdir, getcwd, access, R_OK
+from os.path import abspath, expanduser, exists, isdir
 import logging
 
 
@@ -74,10 +74,14 @@ class BashProcessor:
             self.current_directory = expanduser("~")
         else:
             path_ = str(args[0])
-            if exists(path_):
+            if exists(path_) and isdir(path_) and access(path_, R_OK):
                 self.current_directory = str(path_)
-            else:
+            elif not exists(path_):
                 estream += "ERROR: directory does not exist\n"
+            elif not access(path_, R_OK):
+                estream += "ERROR: permission denied\n"
+            elif not isdir(path_):
+                estream += "ERROR: trying to cd into file\n"
         return estream, ostream
 
     def mv(self, *args) -> tuple[str, str]:

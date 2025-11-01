@@ -16,5 +16,6 @@ def bash_processor(fs: FakeFilesystem):
         fs.create_file(os.path.join(ls_fold_path, f"{num}.txt"), contents=f"{num}")
     fs.create_dir(os.path.join("data", "permitted"))
     perm_dir = os.path.join("data", "permitted")
+    fs.create_file(os.path.join(perm_dir, "secret"))
     chmod(perm_dir, 0)
     return BashProcessor("data")

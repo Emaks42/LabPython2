@@ -9,3 +9,15 @@ dependencies = [
     "pytest==8.4.2",
     "setuptools>=80.9.0",
 ]
+
+[tool.mypy]
+files = ["src"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytest"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_missing_imports = true
