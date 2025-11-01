@@ -1,5 +1,6 @@
 from pathlib import Path
 from src.constants import COMMANDS_AND_OPTIONS, COMMANDS_REQUIRES_TEXT_ARGS
+from re import sub
 
 
 def preprocess_options_for_command(command: str, *args) -> tuple[list[str | Path], dict[str, bool]]:
@@ -23,6 +24,7 @@ def preprocess_command(s: str) -> list[str | Path]:
     """
 
     parsed_command_and_args: list[tuple[str, str]] = []
+    s = sub(r' +', " ", s).strip()
     current_position = 0
     buffer = ""
     quoted = ""

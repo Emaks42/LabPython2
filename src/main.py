@@ -1,4 +1,5 @@
 from src.bash_processor import BashProcessor
+from constants import BASE_DIR_FOR_MAIN
 
 
 def main() -> None:
@@ -8,7 +9,7 @@ def main() -> None:
     """
 
     print("Добро пожаловать в эмулятор bash, если хотите завершить процесс введите exit")
-    bash_proc = BashProcessor("~/laboratory")
+    bash_proc = BashProcessor(BASE_DIR_FOR_MAIN)
     while True:
         inp = input(bash_proc.get_current_directory() + ">")
         if inp.strip() == "exit":

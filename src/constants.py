@@ -15,3 +15,4 @@ COMMANDS_AND_OPTIONS: dict[str, list[str]] = {
 COMMANDS_REQUIRES_TEXT_ARGS: dict[str, int] = {
     "grep": 1,
 }
+BASE_DIR_FOR_MAIN = '~'

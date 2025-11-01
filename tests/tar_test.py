@@ -40,3 +40,7 @@ def test_error_tar_and_untar_nonexistent_file(bash_processor):
 
 def test_error_untar_given_dir(bash_processor):
     assert bash_processor.command("untar ls_folder") == "ERROR: given directory, not file\n"
+
+
+def test_error_tar_given_file(bash_processor):
+    assert bash_processor.command("tar 0.txt 0.txt") == "ERROR: not directory given\n"

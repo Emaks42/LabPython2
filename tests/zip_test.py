@@ -40,3 +40,7 @@ def test_error_zip_and_unzip_nonexistent_file(bash_processor):
 
 def test_error_unzip_given_dir(bash_processor):
     assert bash_processor.command("unzip ls_folder") == "ERROR: given directory, not file\n"
+
+
+def test_error_zip_given_file(bash_processor):
+    assert bash_processor.command("zip 0.txt 0.txt") == "ERROR: not directory given\n"

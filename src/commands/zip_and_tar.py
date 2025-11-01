@@ -19,6 +19,8 @@ def zip_func(*args) -> tuple[str, str]:
                     zf.write(file, arcname=file.name)
         except FileNotFoundError:
             estream += "ERROR: no such file or directory\n"
+        except NotADirectoryError:
+            estream += "ERROR: not directory given\n"
         except PermissionError:
             estream += "ERROR: permission denied\n"
     return estream, ostream
@@ -61,6 +63,8 @@ def tar_func(*args) -> tuple[str, str]:
                     tar.add(f, arcname=f.name)
         except FileNotFoundError:
             estream += "ERROR: no such file or directory\n"
+        except NotADirectoryError:
+            estream += "ERROR: not directory given\n"
         except PermissionError:
             estream += "ERROR: permission denied\n"
     return estream, ostream
