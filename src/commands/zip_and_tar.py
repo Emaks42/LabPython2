@@ -38,6 +38,8 @@ def unzip_func(*args) -> tuple[str, str]:
                 zf.extractall(getcwd())
         except FileNotFoundError:
             estream += "ERROR: no such file or directory\n"
+        except IsADirectoryError:
+            estream += "ERROR: given directory, not file\n"
         except PermissionError:
             estream += "ERROR: permission denied\n"
     return estream, ostream
@@ -78,6 +80,8 @@ def untar_func(*args) -> tuple[str, str]:
                 tar.extractall(path=getcwd())
         except FileNotFoundError:
             estream += "ERROR: no such file or directory\n"
+        except IsADirectoryError:
+            estream += "ERROR: given directory, not file\n"
         except PermissionError:
             estream += "ERROR: permission denied\n"
     return estream, ostream

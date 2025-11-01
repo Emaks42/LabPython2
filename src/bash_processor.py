@@ -94,9 +94,7 @@ class BashProcessor:
         cp_ = cp_func(*args)
         if len(cp_[0]) != 0:
             return cp_
-        rm_ = rm_func(*(list(args[:-1]) + ["-f"]))
-        if len(rm_[0].replace("ERROR: no such file\n", "")) != 0:
-            return rm_[0].replace("ERROR: no such file\n", ""), ""
+        rm_func(*(list(args[:-1]) + ["-f"]))
         return "", ""
 
     def get_current_directory(self) -> str:

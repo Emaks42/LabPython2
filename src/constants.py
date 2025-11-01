@@ -1,7 +1,7 @@
 QUOTE_REQUIRED_SYMBOLS: str = " $/*?"
 COMMANDS_AND_OPTIONS: dict[str, list[str]] = {
     "ls": ["-l"],
-    "mv": [],
+    "mv": ["-r"],
     "cat": [],
     "cd": [],
     "cp": ["-r"],
