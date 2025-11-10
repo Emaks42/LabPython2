@@ -1,5 +1,4 @@
 from shutil import copy2, copytree
-from pathlib import Path
 from src.preprocessor import preprocess_options_for_command
 
 
@@ -20,14 +19,11 @@ def cp_func(*args) -> tuple[str, str]:
             try:
                 if path == args_[-1]:
                     estream += "ERROR: copy object into same folder with original\n"
+                    continue
                 if options["-r"]:
-                    if path != args_[-1]:
-                        copytree(path, args_[-1], dirs_exist_ok=True)
+                    copytree(path, args_[-1], dirs_exist_ok=True)
                 else:
-                    if path != args_[-1]:
-                        copy2(path, args_[-1])
-                    if Path(path).is_dir() or Path(args_[-1]).is_dir():
-                        estream += "ERROR: trying to copy directory without -r\n"
+                    copy2(path, args_[-1])
             except FileNotFoundError:
                 estream += "ERROR: no such file or directory\n"
             except FileExistsError:
