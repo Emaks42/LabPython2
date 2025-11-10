@@ -11,13 +11,15 @@ def cp_func(*args) -> tuple[str, str]:
     ostream = ""
     estream = ""
     args_, options = preprocess_options_for_command("cp", *args)
-    try:
-        if len(args_) == 0:
-            estream += "ERROR: missing file operand\n"
-        elif len(args_) == 1:
-            estream += "ERROR: not specified directory to copy\n"
-        else:
-            for path in args_[:-1]:
+    if len(args_) == 0:
+        estream += "ERROR: missing file operand\n"
+    elif len(args_) == 1:
+        estream += "ERROR: not specified directory to copy\n"
+    else:
+        for path in args_[:-1]:
+            try:
+                if path == args_[-1]:
+                    estream += "ERROR: copy object into same folder with original\n"
                 if options["-r"]:
                     if path != args_[-1]:
                         copytree(path, args_[-1], dirs_exist_ok=True)
@@ -26,10 +28,12 @@ def cp_func(*args) -> tuple[str, str]:
                         copy2(path, args_[-1])
                     if Path(path).is_dir() or Path(args_[-1]).is_dir():
                         estream += "ERROR: trying to copy directory without -r\n"
-    except FileNotFoundError:
-        estream += "ERROR: no such file\n"
-    except PermissionError:
-        estream += "ERROR: permission denied\n"
-    except IsADirectoryError:
-        estream += "ERROR: trying to copy directory without -r\n"
+            except FileNotFoundError:
+                estream += "ERROR: no such file or directory\n"
+            except FileExistsError:
+                estream += "ERROR: try to copy directory into file\n"
+            except PermissionError:
+                estream += "ERROR: permission denied\n"
+            except IsADirectoryError:
+                estream += "ERROR: trying to copy directory without -r\n"
     return estream, ostream

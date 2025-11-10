@@ -32,7 +32,7 @@ def test_mv_multiple_args(bash_processor):
 
 
 def test_mv_error_nonexistent_file(bash_processor):
-    assert bash_processor.command("mv 10.txt 12.txt") == "ERROR: no such file\n"
+    assert bash_processor.command("mv 10.txt 12.txt") == "ERROR: no such file or directory\n"
 
 
 def test_mv_error_permission(bash_processor):
