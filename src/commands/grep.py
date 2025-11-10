@@ -4,6 +4,10 @@ from pathlib import Path
 
 
 def grep_func(*args) -> tuple[str, str]:
+    """
+        Функция, реализующая работу команды grep
+        :return: Возвращает результат работы команды
+    """
     ostream = ""
     estream = ""
     args_, options = preprocess_options_for_command("grep", *args)

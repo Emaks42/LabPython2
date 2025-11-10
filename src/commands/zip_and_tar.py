@@ -4,6 +4,10 @@ from os import getcwd
 
 
 def zip_func(*args) -> tuple[str, str]:
+    """
+        Функция, реализующая работу команды zip
+        :return: Возвращает результат работы команды
+    """
     ostream = ""
     estream = ""
     if len(args) > 2:
@@ -27,6 +31,10 @@ def zip_func(*args) -> tuple[str, str]:
 
 
 def unzip_func(*args) -> tuple[str, str]:
+    """
+        Функция, реализующая работу команды unzip
+        :return: Возвращает результат работы команды
+    """
     ostream = ""
     estream = ""
     if len(args) > 1:
@@ -48,6 +56,10 @@ def unzip_func(*args) -> tuple[str, str]:
 
 
 def tar_func(*args) -> tuple[str, str]:
+    """
+        Функция, реализующая работу команды tar
+        :return: Возвращает результат работы команды
+    """
     ostream = ""
     estream = ""
     if len(args) > 2:
@@ -71,6 +83,10 @@ def tar_func(*args) -> tuple[str, str]:
 
 
 def untar_func(*args) -> tuple[str, str]:
+    """
+        Функция, реализующая работу команды untar
+        :return: Возвращает результат работы команды
+    """
     ostream = ""
     estream = ""
     if len(args) > 1:
