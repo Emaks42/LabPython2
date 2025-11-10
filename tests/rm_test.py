@@ -45,7 +45,10 @@ def test_rm_error_root_dir_remove(bash_processor):
 
 
 def test_rm_error_parent_dir_remove(bash_processor):
+    bash_processor.command("cd /to/to/to")
     assert bash_processor.command("rm ..") == "ERROR: trying to remove parent directory\n"
+    assert bash_processor.command("rm ../..") == "ERROR: trying to remove parent directory\n"
+    assert bash_processor.command("rm .") == "ERROR: trying to remove current directory\n"
 
 
 def test_rm_error_no_such_file(bash_processor):

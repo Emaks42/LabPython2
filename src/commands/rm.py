@@ -17,12 +17,14 @@ def rm_func(*args) -> tuple[str, str]:
         for path in args_:
             try:
                 path = Path(path)
-                if path == Path("..").resolve():
-                    estream += "ERROR: trying to remove parent directory\n"
-                elif path == Path("/").resolve():
+                if path == Path("/").resolve():
                     estream += "ERROR: trying to remove root directory\n"
                 elif path == Path("C:\\").resolve():
                     estream += "ERROR: trying to remove root directory\n"
+                elif Path("..").resolve().is_relative_to(path):
+                    estream += "ERROR: trying to remove parent directory\n"
+                elif path == Path(".").resolve():
+                    estream += "ERROR: trying to remove current directory\n"
                 elif options["-r"]:
                     if not options["-f"]:
                         permission = input(f"Вы хотите удалить директорию {path}? (y/n)").lower()

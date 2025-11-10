@@ -8,6 +8,9 @@ from os import chmod
 @pytest.fixture
 def bash_processor(fs: FakeFilesystem):
     fs.create_dir("data")
+    fs.create_dir("to")
+    fs.create_dir(os.path.join("to", "to"))
+    fs.create_dir(os.path.join(os.path.join("to", "to"), "to"))
     for num in range(10):
         fs.create_file(os.path.join("data", f"{num}.txt"), contents=f"{num}")
     fs.create_dir(os.path.join("data", "ls_folder"))
