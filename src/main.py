@@ -1,20 +1,18 @@
 from src.bash_processor import BashProcessor
-from constants import BASE_DIR_FOR_MAIN
+from src.constants import BASE_DIR_FOR_MAIN
+from flask import Flask
+
+app = Flask(__name__)
+bash_proc = BashProcessor(BASE_DIR_FOR_MAIN)
+
+
+@app.route('/')
+def home():
+    return bash_proc.command("ls /app")
 
 
 def main() -> None:
-    """
-    Обязательнная составляющая программ, которые сдаются. Является точкой входа в приложение
-    :return: Данная функция ничего не возвращает
-    """
-
-    print("Добро пожаловать в эмулятор bash, если хотите завершить процесс введите exit")
-    bash_proc = BashProcessor(BASE_DIR_FOR_MAIN)
-    while True:
-        inp = input(bash_proc.get_current_directory() + ">")
-        if inp.strip() == "exit":
-            break
-        print(bash_proc.command(inp), end="")
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 if __name__ == "__main__":
