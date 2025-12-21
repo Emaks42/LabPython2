@@ -16,8 +16,6 @@ def cat_func(*args) -> tuple[str, str]:
             else:
                 file = path.read_text(encoding="utf-8")
                 ostream += file + "\n"
-        except PermissionError:
-            estream += "ERROR: permission denied\n"
-        except UnicodeDecodeError:
-            estream += f"ERROR: incorrect encoding of file {path}\n"
+        except Exception:
+            estream += "ERROR: something gone wrong....\n"
     return estream, ostream

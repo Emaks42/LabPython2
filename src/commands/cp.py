@@ -17,7 +17,7 @@ def cp_func(*args) -> tuple[str, str]:
     else:
         for path in args_[:-1]:
             try:
-                if path == args_[-1]:
+                if path is args_[-1]:
                     estream += "ERROR: copy object into same folder with original\n"
                     continue
                 if options["-r"]:

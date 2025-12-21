@@ -21,7 +21,7 @@ def rm_func(*args) -> tuple[str, str]:
                     estream += "ERROR: trying to remove root directory\n"
                 elif path == Path("C:\\").resolve():
                     estream += "ERROR: trying to remove root directory\n"
-                elif Path("..").resolve().is_relative_to(path):
+                elif Path("..").resolve() == path:
                     estream += "ERROR: trying to remove parent directory\n"
                 elif path == Path(".").resolve():
                     estream += "ERROR: trying to remove current directory\n"

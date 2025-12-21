@@ -1,10 +1,18 @@
-FROM python:3.11:alpine
+FROM python:3.11 AS builder
 
+COPY requirements.txt /
+
+RUN pip install --no-cache-dir -r /requirements.txt
+RUN pip install nuitka
 WORKDIR /app
 
-COPY requirements.txt /app
-
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
 COPY . /app
-CMD ["python3", "-m", "src.main"]
+
+RUN python -m nuitka --follow-imports --include-plugin-directory=src src/main.py
+
+#CMD ["./main.bin"]
+
+FROM scratch
+COPY --from=builder /app/main.bin /main.bin
+COPY --from=builder /bin /bin
+CMD ['./main.bin']
